@@ -106,7 +106,7 @@ let get_lid = function
   | _ -> None
 
 let find_attr s attrs =
-  try Some (snd (List.find (fun (x, _) -> x.txt = s) attrs))
+  try Some ((List.find (fun { attr_name; attr_payload = _; attr_loc = _; } -> attr_name.txt = s) attrs).attr_payload)
   with Not_found -> None
 
 let expr_of_payload = function

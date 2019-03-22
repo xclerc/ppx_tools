@@ -108,21 +108,21 @@ module Main : sig end = struct
     | PStr [ {pstr_desc=Pstr_eval (e, _); _} ] -> e
     | _ ->
         Format.eprintf "%aExpression expected@."
-          Location.print_error loc;
+          Location.print_loc loc;
         exit 2
 
   let get_typ loc = function
     | PTyp t -> t
     | _ ->
         Format.eprintf "%aType expected@."
-          Location.print_error loc;
+          Location.print_loc loc;
         exit 2
 
   let get_pat loc = function
     | PPat (t, None) -> t
     | _ ->
         Format.eprintf "%aPattern expected@."
-          Location.print_error loc;
+          Location.print_loc loc;
         exit 2
 
   let exp_lifter loc map =
@@ -193,7 +193,8 @@ module Main : sig end = struct
   let loc = ref (app (evar "Pervasives.!") [evar "Ast_helper.default_loc"])
 
   let handle_attr = function
-    | {txt="metaloc";loc=l}, e -> loc := get_exp l e
+    | { attr_name = {txt="metaloc";loc=l}; attr_payload = e; attr_loc = _; } ->
+      loc := get_exp l e
     | _ -> ()
 
   let with_loc ?(attrs = []) f =
